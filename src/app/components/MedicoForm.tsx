@@ -11,11 +11,38 @@ interface Medico {
     name: string;
     email: string;
     phone: string;
-    program: string;
+    especialidad: string;
   }
 
-  const MedicoForm =()=>{
+  const MedicoForm = ()=>{
     const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
+    const handleSubmit =async(e:any)=>{
+        e.preventDefault()
+
+        const myMedico:Medico={
+            name:e.target.name.value,
+            email:e.target.email.value,
+            phone:e.target.phone.value,
+            especialidad:e.target.especialidad.value
+
+
+        }
+
+        console.log(e)
+    
+    try {
+        const response = await fetch("http://localhost:8080/medicos", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(myMedico)
+    })
+    const data = await response.json();
+      } catch (error) {
+        console.error(error)
+    }
+
     useEffect(
         ()=>{
             const fetchEspecialidades = async()=>{
@@ -30,22 +57,22 @@ interface Medico {
             };
 
             fetchEspecialidades();
-        }
-    )
+        },[]);
+    }
 return(
    
         
-          <form>
+          <form onSubmit={handleSubmit}>
             <input type="text" name="name" placeholder="Nombre" />
             <input type="email" name="email" placeholder="Correo" />
             <input type="text" name="phone" placeholder="Teléfono" />
             <select name="especialidad">
-                <option value="">Seleccione una especialidad</option>
+                <option key="" value="">Seleccione una especialidad</option>
             {
                 especialidades.map(
                     (especialidad)=>{
                         return(
-                        <option value={especialidad.code}>
+                        <option key={especialidad.code} value={especialidad.code}>
                             {especialidad.name}
 
                         </option>
@@ -60,5 +87,5 @@ return(
             
 )
 
-  }
-  export default MedicoForm;
+        } 
+  export default MedicoForm
